@@ -77,8 +77,8 @@ class WeekData {
 	{
 		weeksList = [];
 		weeksLoaded.clear();
-		#if windows
-		var directories:Array<String> = [Paths.mods(), Paths.getPreloadPath()];
+		#if MODS_ALLOWED
+		var directories:Array<String> = [Paths.mods(), SUtil.getPath() + Paths.getPreloadPath()];
 		var originalLength:Int = directories.length;
 		if(FileSystem.exists(Paths.mods())) {
 			for (folder in FileSystem.readDirectory(Paths.mods())) {
@@ -94,7 +94,7 @@ class WeekData {
 		var originalLength:Int = directories.length;
 		#end
 
-		var sexList:Array<String> = CoolUtil.coolTextFile(Paths.getPreloadPath('weeks/weekList.txt'));
+		var sexList:Array<String> = CoolUtil.coolTextFile(SUtil.getPath() + Paths.getPreloadPath('weeks/weekList.txt'));
 		for (i in 0...sexList.length) {
 			for (j in 0...directories.length) {
 				var fileToCheck:String = directories[j] + 'weeks/' + sexList[i] + '.json';
@@ -103,7 +103,7 @@ class WeekData {
 					if(week != null) {
 						var weekFile:WeekData = new WeekData(week);
 
-						#if windows
+						#if MODS_ALLOWED
 						if(j >= originalLength) {
 							weekFile.folder = directories[j].substring(Paths.mods().length, directories[j].length-1);
 						}
@@ -118,9 +118,9 @@ class WeekData {
 			}
 		}
 
-		#if windows
+		#if MODS_ALLOWED
 		for (i in 0...directories.length) {
-			var directory:String = directories[i] + 'weeks/';
+			var directory:String = SUtil.getPath() + directories[i] + 'weeks/';
 			if(FileSystem.exists(directory)) {
 				for (file in FileSystem.readDirectory(directory)) {
 					var path = haxe.io.Path.join([directory, file]);
@@ -149,7 +149,7 @@ class WeekData {
 
 	private static function getWeekFile(path:String):WeekFile {
 		var rawJson:String = null;
-		#if windows
+		#if MODS_ALLOWED
 		if(FileSystem.exists(path)) {
 			rawJson = File.getContent(path);
 		}
